@@ -5,7 +5,7 @@ BASE_DIR="tech-stack-architectures"
 
 # Folders to create
 declare -A FOLDERS=(
-    ["monitoring/elk"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible"
+    ["monitoring/elk"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
     ["monitoring/prometheus-grafana"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible"
     ["server-tech/mean"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible"
     ["server-tech/mern"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible"
