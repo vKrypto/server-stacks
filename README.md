@@ -68,14 +68,7 @@ Automate your infrastructure and application deployment with Ansible playbooks f
 ---
 
 ## How to Use
-
 Each stack has its own directory containing configuration files, deployment instructions, and any necessary scripts. Follow the instructions in each folder’s `README.md` for detailed setup steps.
-
-### Example: Running ELK Stack with Docker Compose
-```bash
-cd monitoring/elk/docker-compose
-docker-compose up
-```
 
 ## Folder Structure
 
