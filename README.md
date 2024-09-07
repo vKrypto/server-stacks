@@ -75,9 +75,11 @@ Each stack has its own directory containing configuration files, deployment inst
 ```bash
 cd monitoring/elk/docker-compose
 docker-compose up
+```
 
 ## Folder Structure
 
+```
 tech-stack-architectures/
 │
 ├── monitoring/
@@ -162,3 +164,4 @@ tech-stack-architectures/
         ├── kubernetes/
         ├── terraform/
         └── ansible/
+```
