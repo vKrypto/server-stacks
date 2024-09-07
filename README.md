@@ -75,3 +75,90 @@ Each stack has its own directory containing configuration files, deployment inst
 ```bash
 cd monitoring/elk/docker-compose
 docker-compose up
+
+## Folder Structure
+
+tech-stack-architectures/
+│
+├── monitoring/
+│   ├── elk/
+│   │   ├── docker-compose/
+│   │   ├── docker-swarm/
+│   │   ├── docker-kubernetes/
+│   │   ├── kubernetes/
+│   │   ├── terraform/
+│   │   └── ansible/
+│   └── prometheus-grafana/
+│       ├── docker-compose/
+│       ├── docker-swarm/
+│       ├── docker-kubernetes/
+│       ├── kubernetes/
+│       ├── terraform/
+│       └── ansible/
+│
+├── server-tech/
+│   ├── mean/
+│   │   ├── docker-compose/
+│   │   ├── docker-swarm/
+│   │   ├── docker-kubernetes/
+│   │   ├── kubernetes/
+│   │   ├── terraform/
+│   │   └── ansible/
+│   ├── mern/
+│   │   ├── docker-compose/
+│   │   ├── docker-swarm/
+│   │   ├── docker-kubernetes/
+│   │   ├── kubernetes/
+│   │   ├── terraform/
+│   │   └── ansible/
+│   ├── vuejs/
+│   │   ├── docker-compose/
+│   │   ├── docker-swarm/
+│   │   ├── docker-kubernetes/
+│   │   ├── kubernetes/
+│   │   ├── terraform/
+│   │   └── ansible/
+│   ├── django/
+│   │   ├── docker-compose/
+│   │   ├── docker-swarm/
+│   │   ├── docker-kubernetes/
+│   │   ├── kubernetes/
+│   │   ├── terraform/
+│   │   └── ansible/
+│   ├── fastapi/
+│   │   ├── docker-compose/
+│   │   ├── docker-swarm/
+│   │   ├── docker-kubernetes/
+│   │   ├── kubernetes/
+│   │   ├── terraform/
+│   │   └── ansible/
+│   └── nextjs/
+│       ├── docker-compose/
+│       ├── docker-swarm/
+│       ├── docker-kubernetes/
+│       ├── kubernetes/
+│       ├── terraform/
+│       └── ansible/
+│
+└── message-queues/
+    ├── kafka/
+    │   ├── docker-compose/
+    │   ├── docker-swarm/
+    │   ├── docker-kubernetes/
+    │   ├── kubernetes/
+    │   ├── terraform/
+    │   └── ansible/
+    ├── rabbitmq/
+    │   ├── docker-compose/
+    │   ├── docker-swarm/
+    │   ├── docker-kubernetes/
+    │   ├── kubernetes/
+    │   ├── terraform/
+    │   └── ansible/
+    └── rabbitmq-celery/
+        ├── docker-compose/
+        ├── docker-swarm/
+        ├── docker-kubernetes/
+        ├── kubernetes/
+        ├── terraform/
+        └── ansible/
