@@ -1,7 +1,7 @@
 # Dockerfile
 
 # Use the official tiangolo FastAPI image
-FROM tiangolo/uvicorn-gunicorn-fastapi:python3.8
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
 # Set the working directory inside the container
 WORKDIR /app

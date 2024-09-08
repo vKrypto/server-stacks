@@ -1,5 +1,5 @@
 # Use the official Python image from Docker Hub
-FROM tiangolo/uvicorn-gunicorn-django:python3.8
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 
 # Set the working directory inside the container
 WORKDIR /app

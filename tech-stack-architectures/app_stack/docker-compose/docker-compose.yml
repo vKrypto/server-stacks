@@ -64,12 +64,12 @@ services:
       context: ./apps/django
       dockerfile: Dockerfile
     container_name: django_app
-    volumes:
-      - django-app-data:/app
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@master_db/app_db
     networks:
       - app_network
+    depends_on:
+      - master_db
 
   # /api/express
   express_app:
@@ -78,12 +78,12 @@ services:
       dockerfile: Dockerfile
     container_name: express_app
     command: pm2-runtime start app.js --name "express-app"
-    volumes:
-      - express-app-data:/usr/src/app
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@master_db/app_db
     networks:
       - app_network
+    depends_on:
+      - master_db
 
   # /api/fastapi
   fastapi_app:
@@ -91,12 +91,12 @@ services:
       context: ./apps/fastapi
       dockerfile: Dockerfile
     container_name: fastapi_app
-    volumes:
-      - fastapi-app-data:/app
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@master_db/app_db
     networks:
       - app_network
+    depends_on:
+      - master_db
 
   # frontend app served at /
   nextjs_app:
@@ -105,12 +105,15 @@ services:
       dockerfile: Dockerfile
     container_name: nextjs_app
     command: pm2-runtime start npm --name "nextjs-app" -- start
-    volumes:
-      - nextjs-app-data:/usr/src/app
     environment:
       DATABASE_URL: postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@master_db/app_db
     networks:
       - app_network
+    depends_on:
+      - master_db
+      - django_app
+      - express_app
+      - fastapi_app
 
   # Nginx: Entry Point
   nginx:
@@ -125,13 +128,15 @@ services:
       - "443:443"  # for https
     networks:
       - app_network
+    depends_on:
+      - nextjs_app
 
   # Static server
   static_server:
     image: httpd:latest
     container_name: static_server
     volumes:
-      - static-assets:/usr/local/apache2/htdocs/
+      - static_assets:/usr/local/apache2/htdocs/
     networks:
       - app_network
 
@@ -139,53 +144,39 @@ volumes:
   conf:
     driver: local
     driver_opts:
+      type: bind
       o: bind
       device: ./conf
   keys:
     driver: local
     driver_opts:
+      type: bind
       o: bind
-      device: ./../keys
-  django-app-data:
+      device: ../keys
+  static_assets:
     driver: local
     driver_opts:
+      type: bind
       o: bind
-      device: ./apps/django-app
-  express-app-data:
-    driver: local
-    driver_opts:
-      o: bind
-      device: ./apps/express-app
-  fastapi-app-data:
-    driver: local
-    driver_opts:
-      o: bind
-      device: ./apps/fastapi-app
-  nextjs-app-data:
-    driver: local
-    driver_opts:
-      o: bind
-      device: ./apps/nextjs-app
-  static-assets:
-    driver: local
-    driver_opts:
-      o: bind
-      device: ./apps/static-assets
+      device: ./apps/static_assets
   master_db_data:
     driver: local
     driver_opts:
+      type: bind
       o: bind
-      device: docker_fs/master_db
+      device: ./docker_fs/master_db
   slave_db1_data:
     driver: local
     driver_opts:
+      type: bind
       o: bind
-      device: docker_fs/slave_db1
+      device: ./docker_fs/slave_db1
   slave_db2_data:
     driver: local
     driver_opts:
+      type: bind
       o: bind
-      device: docker_fs/slave_db2
+      device: ./docker_fs/slave_db2
   
 networks:
   app_network:
