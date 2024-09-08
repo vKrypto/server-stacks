@@ -1,0 +1,17 @@
+{
+    "name": "nextjs-app",
+    "version": "1.0.0",
+    "description": "A basic Next.js app",
+    "main": "index.js",
+    "scripts": {
+      "dev": "next dev",
+      "build": "next build",
+      "start": "next start"
+    },
+    "dependencies": {
+      "next": "latest",
+      "react": "latest",
+      "react-dom": "latest"
+    }
+  }
+  
