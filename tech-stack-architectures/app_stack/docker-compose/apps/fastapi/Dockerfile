@@ -18,8 +18,5 @@ COPY ./app /app/app
 # Set environment variables (for FastAPI production)
 ENV PYTHONUNBUFFERED=1
 
-# Expose the FastAPI default port
-EXPOSE 8000
-
 # Run the FastAPI app with Gunicorn using Uvicorn workers
 CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "app.main:app"]
