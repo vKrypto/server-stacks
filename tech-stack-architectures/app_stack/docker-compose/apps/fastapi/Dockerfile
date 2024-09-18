@@ -7,13 +7,13 @@ FROM tiangolo/uvicorn-gunicorn-fastapi:python3.9
 WORKDIR /app
 
 # Copy the requirements file into the container
-COPY ./requirements.txt /app/requirements.txt
+COPY ./demo_app/requirements.txt /app/requirements.txt
 
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the FastAPI application into the container
-COPY ./app /app/app
+COPY ./demo_app /app/app
 
 # Set environment variables (for FastAPI production)
 ENV PYTHONUNBUFFERED=1

@@ -7,11 +7,14 @@ FROM node:latest
 WORKDIR /usr/src/app
 
 # Copy package.json and install dependencies
-COPY package.json /usr/src/app/
+COPY demo_app/package.json /usr/src/app/
 RUN npm install
 
+# Install PM2 globally to manage the process
+RUN npm install pm2 -g
+
 # Copy the rest of the application files
-COPY . /usr/src/app
+COPY demo_app /usr/src/app
 
 # Build the Next.js app for production
 RUN npm run build

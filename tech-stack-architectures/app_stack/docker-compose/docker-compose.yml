@@ -13,7 +13,7 @@ services:
       REPLICATION_USER: ${REPLICATION_USER}
       REPLICATION_PASSWORD: ${REPLICATION_PASSWORD}
     volumes:
-      - ./docker_fs/master_db:/var/lib/postgresql/data
+      # - ./docker_fs/master_db:/var/lib/postgresql/data
       - ./conf:/etc/postgresql
       - ./conf/master_init.sh:/docker-entrypoint-initdb.d/master_init.sh
     command: postgres -c 'config_file=/etc/postgresql/master_postgres.conf'
@@ -24,13 +24,14 @@ services:
     image: postgres:latest
     container_name: slave_db1
     environment:
+      MASTER_HOST: master_db
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: app_db
       REPLICATION_USER: ${REPLICATION_USER}
       REPLICATION_PASSWORD: ${REPLICATION_PASSWORD}
     volumes:
-      - ./docker_fs/slave_db1:/var/lib/postgresql/data
+      # - ./docker_fs/slave_db1:/var/lib/postgresql/data
       - ./conf:/etc/postgresql
       - ./conf/slave_init.sh:/docker-entrypoint-initdb.d/slave_init.sh
     command: postgres -c 'config_file=/etc/postgresql/slave_postgres.conf'
