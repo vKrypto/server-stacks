@@ -4,11 +4,13 @@
     "description": "A basic Express server",
     "main": "app.js",
     "scripts": {
-      "start": "node app.js"
+      "dev": "node app.js", 
+      "pm2": "pm2 start ecosystem.config.js"
     },
     "dependencies": {
       "express": "^4.17.1",
-      "express-prom-bundle": "7.0.0"
+      "express-prom-bundle": "^7.0.0",
+      "prom-client": ">=15.0.0"
     }
   }
   
