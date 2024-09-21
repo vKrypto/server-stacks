@@ -5,9 +5,9 @@ BASE_DIR="tech-stack-architectures"
 
 # Folders to create
 declare -A FOLDERS=(
-    ["db_stack/availabilty/mongodb"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
-    ["db_stack/availabilty/postgresql"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
-    ["db_stack/availabilty/mysql"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
+    ["db_stack/availability/mongodb"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
+    ["db_stack/availability/postgresql"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
+    ["db_stack/availability/mysql"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
     ["db_stack/consistency/mongodb"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
     ["db_stack/consistency/postgresql"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
     ["db_stack/consistency/mysql"]="docker-compose docker-swarm docker-kubernetes kubernetes terraform ansible helm"
