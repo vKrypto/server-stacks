@@ -1,2 +1,0 @@
-CREATE USER ${REPLICATION_USER} WITH REPLICATION ENCRYPTED PASSWORD ${REPLICATION_PASSWORD};
-SELECT pg_create_physical_replication_slot('replication_slot');

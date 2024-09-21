@@ -9,7 +9,7 @@ REPLICATION_PASSWORD="${REPLICATION_PASSWORD:-replicator_password}"
 echo "Creating replication user on master..."
 psql -U postgres -c "CREATE ROLE ${REPLICATION_USER} WITH REPLICATION LOGIN PASSWORD '${REPLICATION_PASSWORD}';"
 psql -U postgres -c "SELECT pg_create_physical_replication_slot('replication_slot');"
-# Add replication entries to pg_hba.conf
+
 # Add replication entries to pg_hba.conf
 # IFS=',' read -r -a SLAVE_LIST <<< "$SLAVES"
 
