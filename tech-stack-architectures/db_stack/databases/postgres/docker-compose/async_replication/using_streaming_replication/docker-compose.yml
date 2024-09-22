@@ -1,5 +1,7 @@
 version: '2'
 
+# for other configuration please check out the documentation : https://hub.docker.com/r/bitnami/postgresql
+
 x-postgres-environment:
   &postgres-environment
   POSTGRESQL_USERNAME:  ${POSTGRES_USER:-postgres}
