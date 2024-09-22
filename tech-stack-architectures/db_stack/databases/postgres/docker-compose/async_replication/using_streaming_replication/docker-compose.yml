@@ -12,7 +12,7 @@ x-postgres-environment:
 # common settings
 x-postgres-common:
   &postgres-common
-  image: 'docker.io/bitnami/postgresql:11-debian-10'
+  image: bitnami/postgresql:latest
   restart: always
   environment:
     <<: *postgres-environment
