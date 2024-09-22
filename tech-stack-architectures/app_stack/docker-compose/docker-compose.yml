@@ -1,5 +1,16 @@
 version: '3.8'
 
+x-postgres-environment:
+  &postgres-environment
+  POSTGRES_USER:  ${POSTGRES_USER:-postgres}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+  REPLICATION_USER: ${REPLICATION_USER:-replication_user}
+  REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:-replication_password}
+  POSTGRES_DB: ${DB_NAME}
+  LANG: en_US.UTF-8
+  LC_ALL: en_US.UTF-8
+  MASTER_HOST: master_db
+  MASTER_PORT: 5432
 
 # common settings
 x-postgres-common:
@@ -7,6 +18,8 @@ x-postgres-common:
   image: postgres:latest
   restart: always
   command: postgres -c 'config_file=/etc/postgresql/custom_conf.conf'
+  environment:
+    <<: *postgres-environment
   healthcheck:
     test: 'pg_isready -U ${POSTGRES_USER:-postgres} --dbname=postgres'
     interval: 10s
@@ -15,7 +28,6 @@ x-postgres-common:
   networks:
     - app_network
 
-
 services:
 
   # Databases
@@ -23,37 +35,24 @@ services:
     <<: *postgres-common
     container_name: master_db  # do not change the name, otherwise you might have to change other settings also
     environment:
-      POSTGRES_USER:  ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      REPLICATION_USER: ${REPLICATION_USER:-replication_user}
-      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:-replication_password}
-      POSTGRES_DB: ${DB_NAME}
-      LANG: en_US.UTF-8
-      LC_ALL: en_US.UTF-8
+      <<: *postgres-environment
+      SLAVE_CONTAINERS: "slave_db1,slave_db2,slave_db3" # for creating replica slot 
       POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 192.168.0.0/22 md5"
       POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
     volumes:
-      # - ./docker_fs/master_db:/var/lib/postgresql/data
+      - ./docker_fs/master_db:/var/lib/postgresql/data
       - ./conf/master_postgres.conf:/etc/postgresql/custom_conf.conf
       - ./conf/master_init.sh:/docker-entrypoint-initdb.d/master_init.sh
       # - ./conf/master_pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
-
 
   slave_db1:
     <<: *postgres-common
     container_name: slave_db1
     environment:
-      POSTGRES_USER:  ${POSTGRES_USER:-postgres}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      REPLICATION_USER: ${REPLICATION_USER:-replication_user}
-      REPLICATION_PASSWORD: ${REPLICATION_PASSWORD:-replication_password}
-      POSTGRES_DB: ${DB_NAME}
-      LANG: en_US.UTF-8
-      LC_ALL: en_US.UTF-8
-      MASTER_HOST: master_db
-      MASTER_PORT: 5432
+      <<: *postgres-environment
+      CONTAINER_NAME: "slave_db1"
     volumes:
-      # - ./docker_fs/slave_db1:/var/lib/postgresql/data
+      - ./docker_fs/slave_db1:/var/lib/postgresql/data
       - ./conf/slave_postgres.conf:/etc/postgresql/custom_conf.conf
       - ./conf/slave_init.sh:/docker-entrypoint-initdb.d/slave_init.sh
       # - ./conf/salve_pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
@@ -64,10 +63,8 @@ services:
     <<: *postgres-common
     container_name: slave_db2
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      MASTER_HOST: master_db
-      MASTER_PORT: 5432
+      <<: *postgres-environment
+      CONTAINER_NAME: "slave_db2"
     volumes:
       - ./docker_fs/slave_db2:/var/lib/postgresql/data
       - ./conf/slave_postgres.conf:/etc/postgresql/custom_conf.conf
@@ -75,7 +72,21 @@ services:
       # - ./conf/salve_pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
     depends_on:
       - master_db
-
+  
+  slave_db3:
+    <<: *postgres-common
+    container_name: slave_db3
+    environment:
+      <<: *postgres-environment
+      CONTAINER_NAME: "slave_db3"
+    volumes:
+      - ./docker_fs/slave_db3:/var/lib/postgresql/data
+      - ./conf/slave_postgres.conf:/etc/postgresql/custom_conf.conf
+      - ./conf/slave_init.sh:/docker-entrypoint-initdb.d/slave_init.sh
+      # - ./conf/salve_pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
+    depends_on:
+      - master_db
+  
   # /api/django
   django_app:
     build:
