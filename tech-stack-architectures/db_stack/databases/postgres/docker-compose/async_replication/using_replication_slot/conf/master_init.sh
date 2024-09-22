@@ -14,7 +14,7 @@ psql -U postgres -c "CREATE ROLE ${REPLICATION_USER} WITH REPLICATION LOGIN PASS
 IFS=',' read -r -a SLAVE_LIST <<< "$SLAVE_CONTAINERS"
 
 for SLAVE in "${SLAVE_LIST[@]}"; do
-    echo "host replication postgres ${SLAVE} md5" >> /var/lib/postgresql/data/pg_hba.conf
+    echo "host replication ${REPLICATION_USER} ${SLAVE} md5" >> /var/lib/postgresql/data/pg_hba.conf
     psql -U postgres -c "SELECT pg_create_physical_replication_slot('replication_slot_${SLAVE}');"
 done
 
