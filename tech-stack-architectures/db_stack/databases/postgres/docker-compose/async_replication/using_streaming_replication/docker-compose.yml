@@ -30,10 +30,7 @@ services:
     #   - 'postgresql_master_data:/bitnami/postgresql'
     environment:
       <<: *postgres-environment
-      POSTGRESQL_PGAUDIT_LOG: READ,WRITE
-      POSTGRESQL_LOG_HOSTNAME: 'True'
       POSTGRESQL_REPLICATION_MODE: master
-      ALLOW_EMPTY_PASSWORD: "yes"
 
   slave_db1:
     container_name: slave_db1
@@ -42,8 +39,6 @@ services:
       <<: *postgres-environment
       POSTGRESQL_MASTER_HOST: master_db
       POSTGRESQL_MASTER_PORT_NUMBER: 5432
-      POSTGRESQL_PGAUDIT_LOG: READ,WRITE
-      POSTGRESQL_LOG_HOSTNAME: 'True'
       POSTGRESQL_REPLICATION_MODE: slave
     depends_on:
       - master_db
@@ -55,8 +50,6 @@ services:
       <<: *postgres-environment
       POSTGRESQL_MASTER_HOST: master_db
       POSTGRESQL_MASTER_PORT_NUMBER: 5432
-      POSTGRESQL_PGAUDIT_LOG: READ,WRITE
-      POSTGRESQL_LOG_HOSTNAME: 'True'
       POSTGRESQL_REPLICATION_MODE: slave
     depends_on:
       - master_db
