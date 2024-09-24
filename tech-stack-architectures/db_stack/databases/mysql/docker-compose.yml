@@ -1,0 +1,37 @@
+version: '3.8'
+services:
+  mysql_master:
+    image: mysql:latest
+    container_name: mysql_master
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_REPLICATION_USER: repl_user
+      MYSQL_REPLICATION_PASSWORD: repl_password
+    # volumes:
+    #   - ./master_data:/var/lib/mysql
+    #   - ./master_conf:/etc/mysql/conf.d
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --server-id=1
+      --log-bin=mysql-bin
+
+  mysql_slave:
+    image: mysql:latest
+    container_name: mysql_slave
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_REPLICATION_USER: repl_user
+      MYSQL_REPLICATION_PASSWORD: repl_password
+    depends_on:
+      - mysql_master
+    # volumes:
+    #   - ./slave_data:/var/lib/mysql
+    #   - ./slave_conf:/etc/mysql/conf.d
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --server-id=2
+      --relay-log=mysql-relay-bin
+    entrypoint: >
+      /bin/sh -c "until mysql -hmysql_master -uroot -prootpassword -e 'show databases'; do sleep 3; done;
+      mysql -hmysql_master -uroot -prootpassword -e 'CHANGE MASTER TO MASTER_HOST=\"mysql_master\", MASTER_USER=\"repl_user\", MASTER_PASSWORD=\"repl_password\", MASTER_LOG_FILE=\"mysql-bin.000001\", MASTER_LOG_POS=107';
+      mysql -uroot -prootpassword -e 'START SLAVE;' && tail -f /dev/null"
