@@ -1,0 +1,86 @@
+version: '3.8'
+
+networks:
+  postgres_net:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.0.0.0/24 
+
+services:
+  etcd:
+    image: gcr.io/etcd-development/etcd:v3.5.0
+    container_name: etcd
+    command: /usr/local/bin/etcd --name etcd0 --data-dir /etcd-data --advertise-client-urls http://0.0.0.0:10000 --listen-client-urls http://0.0.0.0:10000
+    ports:
+      - "10000:10000"  # etcd for leader election
+    networks:
+      - postgres_net
+
+  patroni1:
+    image: ongres/patroni:latest
+    container_name: patroni1
+    environment:
+      PATRONI_SCOPE: postgres_cluster
+      PATRONI_NAME: patroni1
+      PATRONI_RESTAPI_LISTEN: "0.0.0.0:10001"
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni1:10001
+      PATRONI_POSTGRESQL_LISTEN: "0.0.0.0:10002"
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni1:10002
+      PATRONI_ETCD_HOSTS: etcd:10000
+      PATRONI_SUPERUSER_USERNAME: postgres
+      PATRONI_SUPERUSER_PASSWORD: password
+      PATRONI_REPLICATION_USERNAME: replicator
+      PATRONI_REPLICATION_PASSWORD: replpassword
+    ports:
+      - "10002:10002"  # PostgreSQL connection port for patroni1
+      - "10001:10001"  # Patroni API port for patroni1
+    networks:
+      postgres_net:
+        ipv4_address: 10.0.0.11  #
+
+  patroni2:
+    image: ongres/patroni:latest
+    container_name: patroni2
+    environment:
+      PATRONI_SCOPE: postgres_cluster
+      PATRONI_NAME: patroni2
+      PATRONI_RESTAPI_LISTEN: "0.0.0.0:10003"
+      PATRONI_RESTAPI_CONNECT_ADDRESS: patroni2:10003
+      PATRONI_POSTGRESQL_LISTEN: "0.0.0.0:10004"
+      PATRONI_POSTGRESQL_CONNECT_ADDRESS: patroni2:10004
+      PATRONI_ETCD_HOSTS: etcd:10000
+      PATRONI_SUPERUSER_USERNAME: postgres
+      PATRONI_SUPERUSER_PASSWORD: password
+      PATRONI_REPLICATION_USERNAME: replicator
+      PATRONI_REPLICATION_PASSWORD: replpassword
+    ports:
+      - "10004:10004"  # PostgreSQL connection port for patroni2
+      - "10003:10003"  # Patroni API port for patroni2
+    networks:
+      postgres_net:
+        ipv4_address: 10.0.0.12  #
+
+  haproxy:
+    image: haproxy:alpine
+    container_name: haproxy
+    command: haproxy -f /usr/local/etc/haproxy/haproxy.cfg -d
+    volumes:
+      - ./conf/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg  # Config file for HAProxy
+    ports:
+      - "10005:5432"  # External port for HAProxy routing to PostgreSQL
+    depends_on:
+      - patroni1
+      - patroni2
+    networks:
+      - postgres_net
+
+  patroni_web_ui:
+    image: ongres/patroni:latest
+    container_name: patroni_web_ui
+    environment:
+      PATRONI_RESTAPI_URL: "http://10.0.0.11:10001"  # Point to the REST API of patroni1
+    ports:
+      - "8000:8080"  # Expose port for the web UI
+    networks:
+      - postgres_net
